@@ -1,0 +1,17 @@
+{
+    "file_format_version": "1.3.0",
+    "layer": {
+        "name": "VK_LAYER_RECAR_overlay",
+        "type": "GLOBAL",
+        "library_path": "__LIB_PATH__",
+        "api_version": "1.3.0",
+        "implementation_version": "1",
+        "description": "Recar notification overlay layer",
+        "disable_environment": {
+            "DISABLE_RECAR_OVERLAY": "1"
+        },
+        "functions": {
+            "vkNegotiateLoaderLayerInterfaceVersion": "vkNegotiateLoaderLayerInterfaceVersion"
+        }
+    }
+}
