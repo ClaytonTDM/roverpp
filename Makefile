@@ -20,9 +20,15 @@ SRCS = $(SRC_DIR)/rvLyMain.cpp \
 OBJS = $(SRCS:.cpp=.o)
 SHADER_HEADER = $(SRC_DIR)/rvShShdr.hpp
 
-.PHONY: all clean install uninstall shaders
+ARM64_CXX    = aarch64-unknown-linux-gnu-g++
+ARM64_TARGET = librecar_overlay_arm64.so
+ARM64_OBJS   = $(SRCS:.cpp=.arm64.o)
+
+.PHONY: all arm64 clean install uninstall shaders
 
 all: shaders $(TARGET)
+
+arm64: shaders $(ARM64_TARGET)
 
 shaders: $(SHADER_HEADER)
 
@@ -32,8 +38,14 @@ $(SHADER_HEADER): shaders/overlay.vert.glsl shaders/overlay.frag.glsl compile_sh
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(SHADER_HEADER)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
+$(SRC_DIR)/%.arm64.o: $(SRC_DIR)/%.cpp $(SHADER_HEADER)
+	$(ARM64_CXX) $(CXXFLAGS) -c -o $@ $<
+
 $(TARGET): $(OBJS)
 	$(CXX) -o $@ $^ $(LDFLAGS)
+
+$(ARM64_TARGET): $(ARM64_OBJS)
+	$(ARM64_CXX) -o $@ $^ $(LDFLAGS)
 
 install: all
 	@mkdir -p $(LIB_INSTALL_DIR)
@@ -52,5 +64,5 @@ uninstall:
 	@echo "uninstalled."
 
 clean:
-	rm -f $(OBJS) $(TARGET) $(SHADER_HEADER)
+	rm -f $(OBJS) $(ARM64_OBJS) $(TARGET) $(ARM64_TARGET) $(SHADER_HEADER)
 	rm -f shaders/*.spv
